@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,18 @@ public class IndexController {
 	
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		
-		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
+		
+	}
+	
+	
+	//se fosse uma vanda por exemplo passaria /{id}/venda
+	@DeleteMapping(value = "/{id}", produces = "application/text")
+	public String delete (@PathVariable("id")Long id) {
+		
+		usuarioRepository.deleteById(id);
+		
+		return "Deletado!";
 		
 	}
 	
@@ -95,7 +107,7 @@ public class IndexController {
 			
 			Usuario usuarioSalvo = usuarioRepository.save(usuario);
 			
-			return new ResponseEntity<Usuario>(usuarioSalvo,HttpStatus.OK);
+			return new ResponseEntity<>(usuarioSalvo,HttpStatus.OK);
 			
 			
 		}
@@ -105,14 +117,14 @@ public class IndexController {
 		
 		
 		@PostMapping(value = "/{iduser}/idvenda/{idvenda}", produces = "application/json")
-		public ResponseEntity cadastrarvenda(@PathVariable Long iduser, @PathVariable Long idvenda){
+		public ResponseEntity<Usuario> cadastrarvenda(@PathVariable Long iduser, @PathVariable Long idvenda){
 			
 			/*aqui seria um processo de venda por ex*/
 			//Usuario usuarioSalvo = usuarioRepository.save(usuario);
 			
 			
 			
-			return new ResponseEntity("id user: " + iduser + " idvenda :" + idvenda ,HttpStatus.OK);
+			return new ResponseEntity<Usuario>(HttpStatus.OK);
 			
 			
 		}
