@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,8 @@ import api.rest.model.Usuario;
 import api.rest.repository.UsuarioRepository;
 
 
+//@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "*")
 @RestController/*ARQUITETURA REST*/
 @RequestMapping(value = "/usuario")
 public class IndexController {
@@ -31,16 +34,16 @@ public class IndexController {
 	
 	/*servico RESTFUL*/
 	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Usuario> init(@PathVariable(value = "id")Long id){
+	public ResponseEntity<Usuario> buscarporId(@PathVariable(value = "id")Long id){
 	
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		
-		return new ResponseEntity<>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 		
 	}
 	
 	
-	//se fosse uma vanda por exemplo passaria /{id}/venda
+	//se fosse uma venda por exemplo passaria /{id}/venda
 	@DeleteMapping(value = "/{id}", produces = "application/text")
 	public String delete (@PathVariable("id")Long id) {
 		
@@ -91,6 +94,12 @@ public class IndexController {
 		@PostMapping(value = "/", produces = "application/json")
 		public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario){
 			
+			
+			for(int pos = 0; pos < usuario.getTelefones().size(); pos ++) {
+				usuario.getTelefones().get(pos).setUsuario(usuario);
+			}
+			
+			
 			Usuario usuarioSalvo = usuarioRepository.save(usuario);
 			
 			return new ResponseEntity<Usuario>(usuarioSalvo,HttpStatus.OK);
@@ -102,12 +111,15 @@ public class IndexController {
 		@PutMapping(value = "/", produces = "application/json")
 		public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario){
 			
+			for(int pos = 0; pos < usuario.getTelefones().size(); pos ++) {
+				usuario.getTelefones().get(pos).setUsuario(usuario);
+			}
 			
 			/*implementar outras rotinas antes de atualizar*/
 			
 			Usuario usuarioSalvo = usuarioRepository.save(usuario);
 			
-			return new ResponseEntity<>(usuarioSalvo,HttpStatus.OK);
+			return new ResponseEntity<Usuario>(usuarioSalvo,HttpStatus.OK);
 			
 			
 		}
