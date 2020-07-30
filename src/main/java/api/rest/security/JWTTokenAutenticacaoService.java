@@ -42,13 +42,13 @@ public class JWTTokenAutenticacaoService {
 				.signWith(SignatureAlgorithm.HS512, SECRET).compact();/* compactacao de algoritmos e geracao de senha */
 
 		/* junta o token com o prefixo */
-		String token = TOKEN_PREFIX + "" + JWT;/* Bearer 7887897998e789e789 */
+		String token = TOKEN_PREFIX + " " + JWT;/* Bearer 7887897998e789e789 */
 
 		/* adiciona o cabecalho http */
 		response.addHeader(HEADER_STRING, token);/* Authorization: Bearer 7887897998e789e789 */
 
 		/* escreve token como resposta no corpo do http */
-		response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
+		response.getWriter().write("{\"Authorization\": \"" +token+ "\"}");
 
 	}
 
@@ -61,7 +61,7 @@ public class JWTTokenAutenticacaoService {
 		if (token != null) {
 
 			/* faz a validacao do token do usuario na requisicao */
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
+			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX,"")).getBody()
 					.getSubject();
 
 			if (user != null) {
