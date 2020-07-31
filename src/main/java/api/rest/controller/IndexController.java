@@ -34,14 +34,37 @@ public class IndexController {
 	
 	
 	/*servico RESTFUL*/
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Usuario> buscarporId(@PathVariable(value = "id")Long id){
+	@GetMapping(value = "v1/{id}", produces = "application/json", headers = "X-API-Version=v1")
+	public ResponseEntity<Usuario> initv1(@PathVariable(value = "id")Long id){
 	
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		
+		System.out.println("Executando versao 1");
 		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 		
 	}
+	
+	
+	/*servico RESTFUL* API versao 2 */
+	@GetMapping(value = "v2/{id}", produces = "application/json")
+	public ResponseEntity<Usuario> initv2(@PathVariable(value = "id")Long id){
+	
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		System.out.println("Executando versao 2");
+		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		
+	}
+	
+	/*outra maneira de fazer o versionnamento da API ----> X-API-Version=v3 no header */
+	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v3")
+	public ResponseEntity<Usuario> initv3(@PathVariable(value = "id")Long id){
+	
+		Optional<Usuario> usuario = usuarioRepository.findById(id);
+		System.out.println("Executando versao 3");
+		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		
+	}
+	
+	
 	
 	
 	//se fosse uma venda por exemplo passaria /{id}/venda
@@ -124,6 +147,15 @@ public class IndexController {
 			for (int pos = 0; pos < usuario.getTelefones().size(); pos ++) {
 				usuario.getTelefones().get(pos).setUsuario(usuario);
 			}
+			
+			
+			Usuario userTemporario = usuarioRepository.findUserByLogin(usuario.getLogin());
+			
+			if (!userTemporario.getSenha().equals(usuario.getSenha())) { //senhas diferentes
+				String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+				usuario.setSenha(senhacriptografada);
+			}
+			
 			
 			
 			Usuario usuarioSalvo = usuarioRepository.save(usuario);

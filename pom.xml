@@ -119,6 +119,13 @@
     <version>0.9.1</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+<dependency>
+    <groupId>com.zaxxer</groupId>
+    <artifactId>HikariCP</artifactId>
+   
+</dependency>
+
 		
 	</dependencies>
 
