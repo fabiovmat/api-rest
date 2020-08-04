@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -104,12 +107,17 @@ public class IndexController {
 	}*/
 	
 	
-	
+	/*vamos supor que o carregamento de usuario seja um processo lento e queremos controlar o cache para agilizar o processo*/
 		
-	@GetMapping(value = "/", produces = "application/json")	
-	public ResponseEntity<List<Usuario>> usuario(){
+	//@Cacheable("cacheusuarios")
+	@GetMapping(value = "/", produces = "application/json")
+	@CacheEvict(value = "cacheusuarios", allEntries = true)
+	@CachePut("cacheususarios")
+	public ResponseEntity<List<Usuario>> usuario() throws InterruptedException {
 		
 		List<Usuario> list = (List<Usuario>) usuarioRepository.findAll();
+		
+		//Thread.sleep(6000);// 6 segundos segura o processo simulando um processo lento
 		
 		return new ResponseEntity<>(list, HttpStatus.OK);
 					

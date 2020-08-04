@@ -22,7 +22,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JWTTokenAutenticacaoService {
 
 	/* tempo de validade do token --milissegundos */
-	private static final long EXPIRATION_TIME = 172800000;
+	private static final long EXPIRATION_TIME = 1728000000;
 
 	/* uma senha unica para compor a autenticacao */
 	private static final String SECRET = "SenhaExtremamenteSecreta";
@@ -46,22 +46,32 @@ public class JWTTokenAutenticacaoService {
 
 		/* adiciona o cabecalho http */
 		response.addHeader(HEADER_STRING, token);/* Authorization: Bearer 7887897998e789e789 */
-
+		
+		/*Liberando responsta para portas diferentes que usam a API caso clientes web */
+		liberacaoCors(response);
+		
 		/* escreve token como resposta no corpo do http */
 		response.getWriter().write("{\"Authorization\": \"" +token+ "\"}");
 
 	}
 
 	/* retorna o usuario validado com token ou caso nao seja valido retorna null */
-	public Authentication getAuthentication(HttpServletRequest request) {
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
 		/* pega o token enviado no cabecalho http */
 		String token = request.getHeader(HEADER_STRING);
 
 		if (token != null) {
+			
+			String tokenLimpo = token.replace(TOKEN_PREFIX, "").trim(); 
+			
+			System.out.println(tokenLimpo);
+			
 
 			/* faz a validacao do token do usuario na requisicao */
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX,"")).getBody()
+			String user = Jwts.parser().setSigningKey(SECRET)
+					.parseClaimsJws(tokenLimpo) 
+					.getBody()
 					.getSubject();
 
 			if (user != null) {
@@ -70,17 +80,49 @@ public class JWTTokenAutenticacaoService {
 						.findUserByLogin(user);
 
 				if (usuario != null) {
-
+					
+					System.out.println(usuario.getToken());
+					if (tokenLimpo.equalsIgnoreCase(usuario.getToken())) {
+						
+						
 					/* retorna o usuario logado */
 					return new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(),
 							usuario.getAuthorities());
 
+					}
 				}
 
 			}
 
 		}
+		
+		liberacaoCors(response);
 		return null;/* nao autorizado */
 	}
 
+	private void liberacaoCors(HttpServletResponse response) {
+		
+		if (response.getHeader("Access-Control-Allow-Origin")   == null) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+		}
+		
+		if (response.getHeader("Access-Control-Allow-Headers") == null) {
+			response.addHeader("Access-Control-Allow-Headers", "*");
+			
+		if (response.getHeader("Access-Controls-Request-Headers") == null) {
+			response.addHeader("Access-Controls-Request-Headers", "*");
+		}
+			
+		if (response.getHeader("Access-Controls-Allow-Methods") == null) {
+			response.addHeader("Access-Controls-Allow-Methods", "*");
+		}	
+		
+		
+		}
+		
+		
+		
+		
+	}
+	
 }

@@ -2,6 +2,7 @@ package api.rest.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,7 +33,9 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 		http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		
 		/*Ativando a permissao para acesso a pagina inicial do sistema EX: sistema.com.br/index*/
-		.disable().authorizeRequests().antMatchers("/index").permitAll()
+		.disable().authorizeRequests().antMatchers("/").permitAll()
+		.antMatchers("/index").permitAll()
+		.antMatchers(HttpMethod.OPTIONS,"//**").permitAll()
 		
 		/*URL de logout - redireciona apos o user fazer logout do sistema*/
 		.anyRequest().authenticated().and().logout().logoutSuccessUrl("/index")

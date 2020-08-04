@@ -43,6 +43,9 @@ public class Usuario implements UserDetails {
 	
 	private String nome;
 	
+	private String token;
+	
+	
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
@@ -85,6 +88,16 @@ public class Usuario implements UserDetails {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+	
+	
+	public String getToken() {
+		return token;
+	}
+	
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
 
 	@Override
 	public int hashCode() {
