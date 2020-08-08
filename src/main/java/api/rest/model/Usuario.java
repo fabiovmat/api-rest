@@ -45,7 +45,17 @@ public class Usuario implements UserDetails {
 	
 	private String token;
 	
+	private String CPF;
 	
+	
+	public String getCPF() {
+		return CPF;
+	}
+
+	public void setCPF(String cPF) {
+		CPF = cPF;
+	}
+
 	public List<Telefone> getTelefones() {
 		return telefones;
 	}
@@ -132,6 +142,8 @@ public class Usuario implements UserDetails {
 	inverseJoinColumns = @JoinColumn(name="role_id",unique = false, referencedColumnName = "id", updatable = false,
 	table = "role", foreignKey = @ForeignKey(name = "role_fk", value = ConstraintMode.CONSTRAINT)))
 	private List<Role> roles; /*papeis ou acessos*/
+
+	
 	
 	/*acessos do usuario*/
 	@JsonIgnore

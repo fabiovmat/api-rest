@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.rest.model.Usuario;
+import api.rest.model.UsuarioDTO;
 import api.rest.repository.UsuarioRepository;
 
 
@@ -38,12 +39,12 @@ public class IndexController {
 	
 	/*servico RESTFUL*/
 	@GetMapping(value = "v1/{id}", produces = "application/json", headers = "X-API-Version=v1")
-	public ResponseEntity<Usuario> initv1(@PathVariable(value = "id")Long id){
+	public ResponseEntity<UsuarioDTO> initv1(@PathVariable(value = "id")Long id){
 	
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		System.out.println("Executando versao 1");
-		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
-		
+		//return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<UsuarioDTO>(new UsuarioDTO(usuario.get()), HttpStatus.OK);
 	}
 	
 	
