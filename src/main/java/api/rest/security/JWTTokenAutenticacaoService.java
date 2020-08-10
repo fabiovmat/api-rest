@@ -47,8 +47,13 @@ public class JWTTokenAutenticacaoService {
 		/* adiciona o cabecalho http */
 		response.addHeader(HEADER_STRING, token);/* Authorization: Bearer 7887897998e789e789 */
 		
+		
+		
 		/*Liberando responsta para portas diferentes que usam a API caso clientes web */
 		liberacaoCors(response);
+		
+		/*liberando resposta para porta diferente do projeto angular*/
+		response.addHeader("Access-Control-Allow-Origin","*");
 		
 		/* escreve token como resposta no corpo do http */
 		response.getWriter().write("{\"Authorization\": \"" +token+ "\"}");
@@ -114,6 +119,8 @@ public class JWTTokenAutenticacaoService {
 
 	private void liberacaoCors(HttpServletResponse response) {
 		
+		response.addHeader("Access-Control-Allow-Origin", "*");
+				
 		if (response.getHeader("Access-Control-Allow-Origin")   == null) {
 			response.addHeader("Access-Control-Allow-Origin", "*");
 		}
@@ -128,6 +135,7 @@ public class JWTTokenAutenticacaoService {
 		if (response.getHeader("Access-Controls-Allow-Methods") == null) {
 			response.addHeader("Access-Controls-Allow-Methods", "*");
 		}	
+		
 		
 		
 		}

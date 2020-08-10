@@ -26,7 +26,7 @@ import api.rest.repository.UsuarioRepository;
 
 
 //@CrossOrigin(origins = "http://localhost:8080")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"http://localhost:4200" , "http://localhost:8080"})
 @RestController/*ARQUITETURA REST*/
 @RequestMapping(value = "/usuario")
 public class IndexController {
